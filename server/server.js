@@ -18,16 +18,13 @@ app.use(express.json());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Serve React build files
-app.use(express.static(path.join(__dirname, '../client/dist')));
-
 app.use('/api/user', userRoute);
 app.use('/api/image', imageRouter);
 
-// Serve index.html for any unknown routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
+app.use(express.static(path.join(__dirname, "../client/build")));
 
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/build", "index.html"));
+});
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
