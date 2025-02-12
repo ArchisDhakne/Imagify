@@ -10,7 +10,7 @@ const AppContextProvider = (props) =>{
     const [showLogin,setShowLogin] = useState(true);
     const [token,setToken] = useState(localStorage.getItem('token'))
     const [credit,setCredit] = useState(false)
-    const backendURL = import.meta.env.VITE_BACKEND_URL;
+    const backendURL = import.meta.env.VITE_BACKEND_URL || "https://imagifys.onrender.com" ;
     const navigate = useNavigate()
 
     const loadCreditData = async ()=>{
