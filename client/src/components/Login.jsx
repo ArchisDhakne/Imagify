@@ -11,49 +11,55 @@ const Login = () => {
     const [name,setName] = useState('');
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false); // State for loading
 
-    const onSubmitHandler = async(e) =>{
-         
+
+    const onSubmitHandler = async (e) => {
         e.preventDefault();
+        setIsLoading(true); // Start loader when request begins
         try {
-           if(state === 'Login'){
-           const {data} = await axios.post("https://imagifys.onrender.com" + '/api/user/login',{email:email,password:password})
-            
-           if(data.success){
-            console.log(data);
-
+            if (state === 'Login') {
+                const { data } = await axios.post("https://imagifys.onrender.com/api/user/login", { email, password });
+    
+                console.log("Login Response:", data); // ✅ Debug log
+    
+                if (data.success) {
                     setToken(data.token);
                     setUser(data.user);
-                    localStorage.setItem('token',data.token);
+                    localStorage.setItem('token', data.token);
                     setShowLogin(false);
-                    toast.success("Login successfull")
-
-           }else{
-            toast.error(data.message);
-
-           }
-        }else{
-
-            const {data} = await axios.post("https://imagifys.onrender.com" + '/api/user/register',{name:name,email:email,password:password})
-            
-            if(data.success){
-                
-                     setToken(data.token);
-                     setUser(data.user);
-                     localStorage.setItem('token',data.token);
-                     setShowLogin(false);
-                     toast.success("Signup successful")
-            }else{
-             toast.error(data.message);
+                    toast.success("Login successful");
+                } else {
+                    toast.error(data.message);
+                }
+    
+            } else {
+                console.log("Sending signup request:", { name, email, password }); // ✅ Debug log before API call
+    
+                const { data } = await axios.post("https://imagifys.onrender.com/api/user/register", { name, email, password });
+    
+              //  console.log("Signup Response:", data); // ✅ Debug log after API call
+    
+                if (data.seccess) {
+                    setToken(data.token);
+                    setUser(data.user);
+                    localStorage.setItem('token', data.token);
+                    setShowLogin(false);
+                    toast.success("Signup successful");
+    
+                    setState('Login'); // ✅ Ensure state is changed after signup
+                } else {
+                    toast.error(data.message);
+                }
             }
-        }  
         } catch (error) {
-
+            console.error("Signup Error:", error); // ✅ Log API errors
             toast.error(error.message);
-
+        } finally {
+            setIsLoading(false); // Stop loader when request is done
         }
-
-    }
+    };
+    
     useEffect(()=>{
         document.body.style.overflow = 'hidden';
         return ()=>{
@@ -86,7 +92,16 @@ const Login = () => {
      
      <p className="text-sm text-blue-600 my-4 cursor-pointer">Forget password?</p>
 
-    <button className="bg-blue-600 w-full text-white py-2 rounded-full">{state === 'Login' ? 'login' : 'create account'}</button>
+     <button 
+  className="bg-blue-600 w-full text-white py-2 rounded-full flex justify-center items-center gap-2"
+  disabled={isLoading} // Disable button while loading
+>
+  {isLoading ? (
+    <div className="loader"></div> // Show loader if loading
+  ) : (
+    state === 'Login' ? 'Login' : 'Create Account'
+  )}
+</button>
        
      { state === 'Login' ? <p className="mt-5 text-center">Don't have an account? <span onClick={()=>setState('Sign Up')} className="text-blue-600 cursor-pointer hover:underline">Sign up</span></p>
      : <p className="mt-5 text-center">Already have an account? <span onClick={()=>setState('Login')} className="text-blue-600 cursor-pointer hover:underline">Login</span></p>
