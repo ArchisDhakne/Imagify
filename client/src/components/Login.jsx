@@ -7,7 +7,7 @@ import {toast} from 'react-toastify'
 
 const Login = () => {
     const [state,setState] = useState('Login');
-    const {setShowLogin,backendURL,setToken,setUser} = useContext(AppContext);
+    const {setShowLogin,setToken,setUser} = useContext(AppContext);
     const [name,setName] = useState('');
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
@@ -17,7 +17,7 @@ const Login = () => {
         e.preventDefault();
         try {
            if(state === 'Login'){
-           const {data} = await axios.post(backendURL + '/api/user/login',{email:email,password:password})
+           const {data} = await axios.post("https://imagifys.onrender.com" + '/api/user/login',{email:email,password:password})
             
            if(data.success){
             console.log(data);
@@ -34,7 +34,7 @@ const Login = () => {
            }
         }else{
 
-            const {data} = await axios.post(backendURL + '/api/user/register',{name:name,email:email,password:password})
+            const {data} = await axios.post("https://imagifys.onrender.com" + '/api/user/register',{name:name,email:email,password:password})
             
             if(data.success){
                 

@@ -15,7 +15,7 @@ const AppContextProvider = (props) =>{
 
     const loadCreditData = async ()=>{
      try {
-        const { data} = await axios.get(backendURL+'/api/user/credits',{headers:{token}})
+        const { data} = await axios.get("https://imagifys.onrender.com"+'/api/user/credits',{headers:{token}})
         if(data.success){
             setCredit(data.credits)
             setUser(data.user);
@@ -32,7 +32,7 @@ const AppContextProvider = (props) =>{
 
     try {
 
-       const {data} = await axios.post(backendURL+'/api/image/generate-image',{prompt},{headers:{token}});
+       const {data} = await axios.post("https://imagifys.onrender.com"+'/api/image/generate-image',{prompt},{headers:{token}});
         
        if(data.success){
         loadCreditData()

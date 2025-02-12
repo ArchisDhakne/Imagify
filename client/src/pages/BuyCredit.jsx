@@ -7,7 +7,7 @@ import { toast } from "react-toastify"
 import axios from "axios"
 const BuyCredit = () => {
 
- const {user,backendURL,loadCreditData,token,setShowLogin} = useContext(AppContext);
+ const {user,loadCreditData,token,setShowLogin} = useContext(AppContext);
 
  const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ const BuyCredit = () => {
       receipt:order.receipt,
       handler:async (response) =>{
           try {
-            const {data} = await axios.post(backendURL+'/api/user/verify-razor', response, {
+            const {data} = await axios.post("https://imagifys.onrender.com"+'/api/user/verify-razor', response, {
               headers: { token }
             });
                          
@@ -53,7 +53,7 @@ const BuyCredit = () => {
           setShowLogin(true);
         }
 
-     const {data} =  await axios.post(backendURL+'/api/user/pay-razor',{planId},{
+     const {data} =  await axios.post("https://imagifys.onrender.com"+'/api/user/pay-razor',{planId},{
           headers:{token}});
        if(data.success){
             initPay(data.order);
