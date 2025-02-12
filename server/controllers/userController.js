@@ -4,39 +4,45 @@ import jwt from 'jsonwebtoken'
 import razorpay from 'razorpay'
 import transactionModel from "../models/transactionModel.js"
 
-const registerUser = async (req,res) =>{
-     try {
-        const {name,email,password} = req.body;
-        
-        if(!name || !email || !password){
-            return res.json({succes:false,message:'Missing details'});
+const registerUser = async (req, res) => {
+    try {
+        console.log("Received signup request:", req.body); // ✅ Log incoming request data
+
+        const { name, email, password } = req.body;
+
+        if (!name || !email || !password) {
+            console.log("Missing details"); // ✅ Log if any field is missing
+            return res.status(400).json({ success: false, message: 'Missing details' });
         }
 
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
-            return res.json({ success: false, message: 'User already exists pls Login' });
+            console.log("User already exists:", email); // ✅ Log if user already exists
+            return res.status(400).json({ success: false, message: 'User already exists. Please log in.' });
         }
 
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password,salt);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-        const userData = {
-            name,email,password:hashedPassword
-        }
-       const newUser = await userModel.create(userData);
-     //  const user = await newUser.save();
+        console.log("Creating new user..."); // ✅ Log before creating the user
+        const newUser = await userModel.create({ name, email, password: hashedPassword });
 
-       const token = jwt.sign({id:newUser._id},process.env.JWT_SECRET)
+        const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
-    res.json({seccess:true,token,user:{name:newUser.name}})
+        console.log("Signup successful:", newUser.email); // ✅ Log successful signup
 
-     } catch (error) {
+        return res.status(201).json({
+            success: true,
+            token,
+            user: { name: newUser.name, email: newUser.email },
+        });
 
-        console.log(error);
-        res.json({success:false,message:error.message})
-        
-     }
-}
+    } catch (error) {
+        console.error("Signup error:", error); // ✅ Log the error
+        return res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+};
+
 
 const loginUser = async (req,res) =>{
     
