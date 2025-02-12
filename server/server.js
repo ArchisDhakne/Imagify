@@ -9,7 +9,14 @@ dotenv.config();
 await connectDB();
 
 const app = express();
-app.use(cors());
+import cors from 'cors';
+
+app.use(cors({
+  origin: "https://imagifyc.onrender.com", // Replace with your deployed frontend URL
+  methods: "GET,POST,PUT,DELETE",
+  credentials: true
+}));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
