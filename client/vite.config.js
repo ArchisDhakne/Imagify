@@ -7,7 +7,7 @@ export default defineConfig({
     port: 4173,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080', // Backend URL
+        target: 'https://imagifys.onrender.com', // Backend URL
         changeOrigin: true,
         secure: false,
       },
